@@ -325,4 +325,18 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     ) {
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
     }
+
+    public Command resetGyroCommand() {
+        return this.runOnce(() -> {
+            DriverStation.getAlliance().ifPresent(allianceColor -> {
+                setOperatorPerspectiveForward(
+                    getState().Pose.getRotation().plus(
+                        allianceColor == Alliance.Red
+                            ? kRedAlliancePerspectiveRotation
+                            : kBlueAlliancePerspectiveRotation
+                    )
+                );
+            });
+        });
+    }
 }
